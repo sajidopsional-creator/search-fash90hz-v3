@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b12">
+<title>Fash90Hz V12</title>
+
+<style>
+:root{
+ --bg:#080b12;
+ --panel:#111827;
+ --panel2:#182235;
+ --line:#26354b;
+ --text:#edf4ff;
+ --muted:#91a1b9;
+ --accent:#35d6ff;
+ --green:#36e6a0;
+ --red:#ff536b;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Arial,sans-serif;
+}
+button,input,textarea,select{font:inherit}
+button{
+ border:0;border-radius:9px;padding:11px 14px;
+ background:var(--accent);color:#061019;
+ font-weight:bold;cursor:pointer;
+}
+button.secondary{
+ background:var(--panel2);color:var(--text);
+ border:1px solid var(--line);
+}
+button.danger{background:var(--red);color:white}
+button.green{background:var(--green);color:#061b13}
+input,textarea,select{
+ width:100%;padding:12px;border-radius:9px;
+ border:1px solid var(--line);
+ background:#080f1d;color:white;
+ outline:none;margin:5px 0 10px;
+}
+textarea{min-height:80px;resize:vertical}
+header{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:10px;padding:15px 18px;
+ border-bottom:1px solid var(--line);
+ background:#0c1220;position:sticky;top:0;z-index:20;
+}
+.logo{font-size:21px;font-weight:900;color:var(--accent)}
+.logo span{color:white}
+.status{font-size:11px;color:var(--green);cursor:pointer}
+.container{max-width:1150px;margin:auto;padding:18px}
+.tabs{
+ display:flex;gap:8px;margin-bottom:17px;
+ flex-wrap:wrap;
+}
+.tab{
+ background:var(--panel);color:var(--muted);
+ border:1px solid var(--line);padding:11px 16px;
+}
+.tab.active{background:var(--accent);color:#061019}
+.page{display:none}
+.page.active{display:block}
+.panel{
+ background:var(--panel);border:1px solid var(--line);
+ padding:16px;border-radius:14px;margin-bottom:15px;
+}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:15px;margin:0 0 9px}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.searchbox{display:flex;gap:8px}
+.searchbox input{margin:0}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+ gap:11px;
+}
+.card{
+ padding:14px;background:#101a2b;
+ border:1px solid var(--line);
+ border-radius:12px;min-width:0;
+}
+.card h3{overflow-wrap:anywhere}
+.card p{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.card button{margin:3px 2px 0 0}
+.tag{font-size:10px;color:var(--accent);margin-bottom:7px}
+iframe{
+ width:100%;height:68vh;border:1px solid var(--line);
+ border-radius:12px;background:white;
+}
+.browserbar{display:flex;gap:7px;margin-bottom:10px}
+.browserbar input{margin:0;min-width:0;flex:1}
+.info{
+ border:1px solid #3a526f;background:#101c2d;
+ padding:16px;border-radius:12px;margin-top:18px;
+}
+.info h3{color:var(--accent)}
+.info li{font-size:13px;line-height:1.8;color:#c4d1e5}
+#adminPage{display:none}
+.admin-section{
+ border-top:1px solid var(--line);
+ padding-top:16px;margin-top:16px;
+}
+.admin-item{
+ padding:12px;background:#0c1422;
+ border:1px solid var(--line);
+ border-radius:10px;margin:8px 0;
+ overflow-wrap:anywhere;
+}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.small{font-size:11px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:25px}
+.empty{
+ padding:18px;border:1px dashed var(--line);
+ border-radius:10px;color:var(--muted);
+ font-size:13px;text-align:center;
+}
+.hidden{display:none!important}
+@media(min-width:900px){
+ body.desktop .container{max-width:1450px}
+ body.desktop iframe{height:78vh}
+}
+@media(max-width:550px){
+ header{padding:12px}
+ .container{padding:12px}
+ .searchbox{flex-direction:column}
+ .browserbar{flex-wrap:wrap}
+ .browserbar input{flex:1 1 100%}
+ iframe{height:65vh}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">FASH<span>90Hz</span></div>
+ <div class="status" id="systemStatus">● SYSTEM ONLINE</div>
+</header>
+
+<div class="container">
+
+ <div class="tabs" id="mainTabs">
+  <button class="tab active" data-page="searchPage">⌕ SEARCH</button>
+  <button class="tab" data-page="browserPage">▣ BROWSER</button>
+  <button class="tab" id="desktopButton">▤ DESKTOP</button>
+ </div>
+
+ <!-- SEARCH -->
+ <section class="page active" id="searchPage">
+
+  <div class="panel">
+   <h2>Search Fash90Hz</h2>
+   <p class="muted">Cari website berdasarkan nama, deskripsi, atau kata kunci.</p>
+   <form class="searchbox" id="searchForm">
+    <input id="searchInput" placeholder="Cari website..." autocomplete="off">
+    <button type="submit">CARI</button>
+   </form>
+   <p class="muted" id="searchMessage">Menghubungkan ke Firebase...</p>
+  </div>
+
+  <div class="panel">
+   <h2>Quick Access</h2>
+   <div class="grid" id="siteGrid"></div>
+  </div>
+
+  <div id="customFeatures"></div>
+
+  <div class="info">
+   <h3>ⓘ INFO PENTING</h3>
+   <p class="muted">
+    Beberapa website tidak bisa ditampilkan langsung di Fash90Hz
+    karena pemilik website membatasi akses melalui iframe.
+    Hal ini tidak selalu berarti website sedang rusak.
+   </p>
+
+   <h3>Cara membuka website di browser lain</h3>
+   <ol>
+    <li class="muted">Pilih website yang ingin dibuka.</li>
+    <li class="muted">Masuk ke tab BROWSER.</li>
+    <li class="muted">Tekan tombol ↗ di sebelah kolom alamat.</li>
+    <li class="muted">Website akan dibuka melalui browser perangkat.</li>
+    <li class="muted">Pilih Chrome atau browser lain jika diminta.</li>
+   </ol>
+   <p class="muted">
+    Tips: Jika halaman putih atau kosong, gunakan tombol ↗.
+   </p>
+  </div>
+
+ </section>
+
+ <!-- BROWSER -->
+ <section class="page" id="browserPage">
+  <div class="panel">
+   <h2>Fash Browser</h2>
+
+   <div class="browserbar">
+    <button class="secondary" id="backButton">←</button>
+    <button class="secondary" id="forwardButton">→</button>
+    <button class="secondary" id="refreshButton">⟳</button>
+    <input id="addressBar" placeholder="Masukkan alamat website...">
+    <button id="goButton">GO</button>
+    <button class="green" id="externalButton">↗</button>
+   </div>
+
+   <iframe id="browserFrame"
+    title="Fash90Hz Browser"
+    referrerpolicy="no-referrer"
+    sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+   </iframe>
+
+   <p class="muted" id="browserMessage">
+    Masukkan alamat website atau pilih website dari Search.
+   </p>
+  </div>
+ </section>
+
+ <!-- CUSTOM TAB PAGE -->
+ <section class="page" id="customPage">
+  <div class="panel">
+   <h2 id="customPageTitle">Tab</h2>
+   <p class="muted" id="customPageDescription"></p>
+   <div class="grid" id="customWebsiteGrid"></div>
+   <div id="customFeatureGrid"></div>
+  </div>
+ </section>
+
+ <!-- ADMIN -->
+ <section id="adminPage">
+
+  <div class="panel">
+   <h2>⚙ ADMIN DASHBOARD</h2>
+   <p class="muted">Pengaturan website, tab, dan fitur Fash90Hz.</p>
+   <button class="secondary" id="logoutButton">LOGOUT ADMIN</button>
+
+   <!-- WEBSITE FORM -->
+   <div class="admin-section">
+    <h3>Tambah / Edit Website</h3>
+
+    <input id="webId" type="hidden">
+
+    <input id="webName" placeholder="Nama website">
+    <input id="webUrl" placeholder="https://contoh.com">
+    <input id="webAliases" placeholder="Alias pencarian, pisahkan dengan koma">
+    <textarea id="webDescription" placeholder="Deskripsi website"></textarea>
+
+    <label class="muted">Pilih Tab Tujuan Website</label>
+    <select id="webCategory">
+     <option value="searchPage">SEARCH / Quick Access</option>
+    </select>
+
+    <p class="muted">
+     Pilih tab yang sudah dibuat. Website akan muncul di tab tersebut.
+    </p>
+
+    <div class="actions">
+     <button id="saveWebsite">SIMPAN WEBSITE</button>
+     <button class="secondary" id="cancelWebsite">RESET</button>
+    </div>
+   </div>
+
+   <!-- WEBSITE LIST -->
+   <div class="admin-section">
+    <h3>Daftar Website</h3>
+    <div id="adminWebsites"></div>
+    <button class="secondary" id="restoreDefaults">
+     PULIHKAN WEBSITE DEFAULT
+    </button>
+   </div>
+
+   <!-- TAB FORM -->
+   <div class="admin-section">
+    <h3>Tambah / Edit Tab</h3>
+
+    <input id="tabId" type="hidden">
+    <input id="tabName" placeholder="Nama tab">
+    <input id="tabIcon" placeholder="Ikon tab, contoh: ✦">
+
+    <div class="actions">
+     <button id="saveTab">SIMPAN TAB</button>
+     <button class="secondary" id="cancelTab">RESET</button>
+    </div>
+
+    <div id="adminTabs"></div>
+   </div>
+
+   <!-- FEATURE BUILDER -->
+   <div class="admin-section">
+    <h3>Custom Feature Builder</h3>
+    <p class="muted">
+     Buat konten tambahan di halaman Search atau tab buatanmu.
+    </p>
+
+    <input id="featureId" type="hidden">
+    <input id="featureTitle" placeholder="Judul fitur">
+
+    <select id="featureType">
+     <option value="card">Card</option>
+     <option value="text">Teks informasi</option>
+     <option value="link">Link</option>
+     <option value="button">Tombol</option>
+    </select>
+
+    <select id="featureTarget">
+     <option value="searchPage">SEARCH</option>
+    </select>
+
+    <textarea id="featureContent" placeholder="Isi atau deskripsi fitur"></textarea>
+    <input id="featureUrl" placeholder="URL tujuan (opsional)">
+    <input id="featureIcon" placeholder="Ikon, contoh: ✦">
+
+    <div class="actions">
+     <button id="saveFeature">SIMPAN FITUR</button>
+     <button class="secondary" id="cancelFeature">RESET</button>
+    </div>
+
+    <div id="adminFeatures"></div>
+   </div>
+
+   <p class="muted" id="adminMessage"></p>
+  </div>
+ </section>
+
+</div>
+
+<footer>Fash90Hz V12 • Cloud Search Interface</footer>
+
+<script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+import {
+ getAuth,
+ signInWithEmailAndPassword,
+ onAuthStateChanged,
+ signOut
+} from
+"https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+import {
+ getFirestore,
+ collection,
+ doc,
+ setDoc,
+ deleteDoc,
+ onSnapshot,
+ serverTimestamp,
+ getDocs
+} from
+"https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+ apiKey: "AIzaSyCI5sbb0jhWSIk3lvMzHVGpFBv_Y-Ba7yE",
+ authDomain: "fash90hz.firebaseapp.com",
+ projectId: "fash90hz",
+ storageBucket: "fash90hz.firebasestorage.app",
+ messagingSenderId: "772488925706",
+ appId: "1:772488925706:web:6f12e0d5be5e55f40e45f3",
+ measurementId: "G-7TZRXC4FXX"
+};
+
+const ADMIN_UID = "iTK6gpl7mrTXMDiNqMtmi6G28B03";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = id => document.getElementById(id);
+
+
+/* =========================
+   DEFAULT WEBSITES
+========================= */
+
+const DEFAULT_WEBSITES = [
+ {
+  id:"fash-finance",
+  name:"Fash Finance",
+  url:"https://fash-finance.vercel.app/",
+  aliases:["fash-finance"],
+  description:"Website Fash Finance"
+ },
+ {
+  id:"belajar-main-btc",
+  name:"Belajar Main BTC",
+  url:"https://market-fashfahis.vercel.app/",
+  aliases:["belajar main btc"],
+  description:"Belajar market dan BTC"
+ },
+ {
+  id:"ide-prompt-html",
+  name:"Ide Prompt HTML by Fash90Hz",
+  url:"https://promt-ai-html-fash.vercel.app/",
+  aliases:["ide prompt html","prompt html"],
+  description:"Kumpulan ide prompt HTML"
+ },
+ {
+  id:"web-deploy-free",
+  name:"Web Deploy Free",
+  url:"https://rash-x-jailbreak.netlify.app/",
+  aliases:["web deploy free"],
+  description:"Website deploy"
+ },
+ {
+  id:"order-am-prem-1th",
+  name:"Order AM Prem 1th",
+  url:"https://order-am-prem-3k.vercel.app/",
+  aliases:["order am prem 1th","order am premium"],
+  description:"Halaman order"
+ }
+];
+
+
+/* =========================
+   APP STATE
+========================= */
+
+let websites = [];
+let customTabs = [];
+let features = [];
+let isAdmin = false;
+
+let clickCount = 0;
+let clickTimer = null;
+
+let historyList = [];
+let historyIndex = -1;
+
+
+/* =========================
+   UTILITIES
+========================= */
+
+function message(text){
+ $("adminMessage").textContent = text;
+}
+
+function normalizeUrl(value){
+ let v = String(value || "").trim();
+
+ if(!/^https?:\/\//i.test(v)){
+  v = "https://" + v;
+ }
+
+ try{
+  const url = new URL(v);
+  if(!["http:","https:"].includes(url.protocol)) return null;
+  return url.href;
+ }catch{
+  return null;
+ }
+}
+
+function safeUrl(value){
+ try{
+  const url = new URL(value);
+  return ["http:","https:"].includes(url.protocol)
+   ? url.href : null;
+ }catch{
+  return null;
+ }
+}
+
+function makeId(prefix){
+ return prefix + "-" + Date.now() + "-" +
+ Math.random().toString(36).slice(2,8);
+}
+
+function websiteDescription(site){
+ return site.description || site.desc || "";
+}
+
+function websiteCategory(site){
+ return site.tabId || site.categoryId || "searchPage";
+}
+
+function getTabName(id){
+ if(id === "searchPage") return "SEARCH";
+ const tab = customTabs.find(t=>t.id === id);
+ return tab ? tab.name : "SEARCH";
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(pageId){
+
+ document.querySelectorAll(".page").forEach(page=>{
+  page.classList.remove("active");
+ });
+
+ $("adminPage").style.display = "none";
+
+ const page = $(pageId);
+
+ if(pageId === "adminPage"){
+  $("adminPage").style.display = "block";
+ }else if(page){
+  page.classList.add("active");
+ }
+
+ document.querySelectorAll(".tab[data-page]").forEach(button=>{
+  button.classList.toggle(
+   "active",
+   button.dataset.page === pageId
+  );
+ });
+
+}
+
+document.querySelectorAll(".tab[data-page]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  showPage(button.dataset.page);
+ });
+});
+
+
+/* =========================
+   DESKTOP MODE
+========================= */
+
+$("desktopButton").addEventListener("click",()=>{
+ document.body.classList.toggle("desktop");
+
+ $("desktopButton").textContent =
+  document.body.classList.contains("desktop")
+   ? "▣ MOBILE"
+   : "▤ DESKTOP";
+});
+
+
+/* =========================
+   BROWSER
+========================= */
+
+function openBrowser(url,addHistory=true){
+
+ const valid = safeUrl(url);
+
+ if(!valid){
+  $("browserMessage").textContent = "Alamat website tidak valid.";
+  return;
+ }
+
+ $("addressBar").value = valid;
+ $("browserFrame").src = valid;
+ $("browserMessage").textContent = "Membuka: " + valid;
+
+ if(addHistory){
+  historyList = historyList.slice(0,historyIndex+1);
+  historyList.push(valid);
+  historyIndex = historyList.length-1;
+ }
+
+ showPage("browserPage");
+}
+
+$("goButton").addEventListener("click",()=>{
+ const url = normalizeUrl($("addressBar").value);
+
+ if(url) openBrowser(url);
+ else $("browserMessage").textContent = "Masukkan URL yang benar.";
+});
+
+$("addressBar").addEventListener("keydown",e=>{
+ if(e.key === "Enter") $("goButton").click();
+});
+
+$("externalButton").addEventListener("click",()=>{
+ const url = safeUrl($("addressBar").value);
+
+ if(url){
+  window.open(url,"_blank","noopener,noreferrer");
+ }else{
+  $("browserMessage").textContent = "Alamat tidak valid.";
+ }
+});
+
+$("backButton").addEventListener("click",()=>{
+ if(historyIndex > 0){
+  historyIndex--;
+  openBrowser(historyList[historyIndex],false);
+ }
+});
+
+$("forwardButton").addEventListener("click",()=>{
+ if(historyIndex < historyList.length-1){
+  historyIndex++;
+  openBrowser(historyList[historyIndex],false);
+ }
+});
+
+$("refreshButton").addEventListener("click",()=>{
+ const url = safeUrl($("addressBar").value);
+ if(url) $("browserFrame").src = url;
+});
+
+
+/* =========================
+   SEARCH
+========================= */
+
+$("searchForm").addEventListener("submit",e=>{
+ e.preventDefault();
+
+ const q = $("searchInput").value.trim().toLowerCase();
+
+ if(!q) return;
+
+ const result = websites.find(site=>{
+
+  const aliases = Array.isArray(site.aliases)
+   ? site.aliases : [];
+
+  const data = [
+   site.name,
+   site.url,
+   websiteDescription(site),
+   ...aliases
+  ].join(" ").toLowerCase();
+
+  return data.includes(q);
+ });
+
+ if(result){
+  openBrowser(result.url);
+  $("searchMessage").textContent =
+   "Website ditemukan: " + result.name;
+ }else{
+  const url = "https://duckduckgo.com/?q=" +
+   encodeURIComponent(q);
+
+  window.open(url,"_blank","noopener,noreferrer");
+
+  $("searchMessage").textContent =
+   "Website tidak ditemukan. Pencarian dibuka di tab baru.";
+ }
+});
+
+
+/* =========================
+   ADMIN LOGIN
+========================= */
+
+$("systemStatus").addEventListener("click",()=>{
+ clickCount++;
+
+ clearTimeout(clickTimer);
+
+ clickTimer = setTimeout(()=>{
+  clickCount = 0;
+ },3000);
+
+ if(clickCount >= 5){
+  clickCount = 0;
+
+  if(isAdmin){
+   showPage("adminPage");
+  }else{
+   loginAdmin();
+  }
+ }
+});
+
+async function loginAdmin(){
+
+ const email = prompt("Email admin Firebase:");
+ if(!email) return;
+
+ const password = prompt("Password admin:");
+ if(!password) return;
+
+ try{
+  await signInWithEmailAndPassword(
+   auth,
+   email.trim(),
+   password
+  );
+ }catch(error){
+  alert("Login gagal: " + error.message);
+ }
+}
+
+onAuthStateChanged(auth,async user=>{
+
+ isAdmin = !!user && user.uid === ADMIN_UID;
+
+ if(user && !isAdmin){
+  await signOut(auth);
+  alert("Akun ini bukan admin Fash90Hz.");
+ }
+
+ if(isAdmin){
+  showPage("adminPage");
+  await restoreMissingDefaults();
+ }
+
+ renderAll();
+});
+
+$("logoutButton").addEventListener("click",async()=>{
+ await signOut(auth);
+ showPage("searchPage");
+});
+
+
+/* =========================
+   FIRESTORE REALTIME
+========================= */
+
+function listenCollection(name,callback){
+
+ onSnapshot(
+  collection(db,name),
+
+  snapshot=>{
+   callback(
+    snapshot.docs.map(d=>({
+     id:d.id,
+     ...d.data()
+    }))
+   );
+  },
+
+  error=>{
+   console.error(name,error);
+
+   $("searchMessage").textContent =
+    "Gagal memuat " + name + ": " + error.message;
+  }
+ );
+
+}
+
+listenCollection("websites",data=>{
+ websites = data;
+ renderAll();
+});
+
+listenCollection("tabs",data=>{
+ customTabs = data;
+ renderAll();
+});
+
+listenCollection("features",data=>{
+ features = data;
+ renderAll();
+});
+
+
+/* =========================
+   WEBSITE CARD
+========================= */
+
+function createWebsiteCard(site){
+
+ const card = document.createElement("div");
+ card.className = "card";
+
+ const tag = document.createElement("div");
+ tag.className = "tag";
+ tag.textContent = getTabName(websiteCategory(site));
+
+ const title = document.createElement("h3");
+ title.textContent = site.name || "Website";
+
+ const desc = document.createElement("p");
+ desc.textContent =
+  websiteDescription(site) || site.url || "";
+
+ const button = document.createElement("button");
+ button.textContent = "BUKA WEBSITE";
+
+ button.addEventListener("click",()=>{
+  openBrowser(site.url);
+ });
+
+ card.append(tag,title,desc,button);
+
+ return card;
+}
+
+
+/* =========================
+   RENDER SEARCH
+========================= */
+
+function renderWebsites(){
+
+ const grid = $("siteGrid");
+ grid.replaceChildren();
+
+ if(!websites.length){
+  const empty = document.createElement("div");
+  empty.className = "empty";
+  empty.textContent = "Belum ada website.";
+  grid.append(empty);
+  return;
+ }
+
+ websites.forEach(site=>{
+  grid.append(createWebsiteCard(site));
+ });
+
+}
+
+
+/* =========================
+   RENDER CUSTOM TABS
+========================= */
+
+function renderTabs(){
+
+ const tabs = $("mainTabs");
+
+ tabs.querySelectorAll(".custom-tab-button")
+  .forEach(el=>el.remove());
+
+ customTabs.forEach(tab=>{
+
+  const button = document.createElement("button");
+
+  button.className = "tab custom-tab-button";
+  button.textContent =
+   (tab.icon || "✦") + " " + (tab.name || "TAB");
+
+  button.addEventListener("click",()=>{
+   showCustomTab(tab.id);
+  });
+
+  tabs.append(button);
+
+ });
+
+
+ /* WEBSITE CATEGORY SELECT */
+
+ const category = $("webCategory");
+ const previousCategory = category.value;
+
+ category.replaceChildren();
+
+ const defaultOption = document.createElement("option");
+ defaultOption.value = "searchPage";
+ defaultOption.textContent = "SEARCH / Quick Access";
+ category.append(defaultOption);
+
+ customTabs.forEach(tab=>{
+
+  const option = document.createElement("option");
+
+  option.value = tab.id;
+  option.textContent =
+   (tab.icon || "✦") + " " + tab.name;
+
+  category.append(option);
+
+ });
+
+ if([...category.options].some(o=>o.value===previousCategory)){
+  category.value = previousCategory;
+ }
+
+
+ /* FEATURE TARGET SELECT */
+
+ const target = $("featureTarget");
+ const oldTarget = target.value;
+
+ target.replaceChildren();
+
+ const searchOption = document.createElement("option");
+ searchOption.value = "searchPage";
+ searchOption.textContent = "SEARCH";
+ target.append(searchOption);
+
+ customTabs.forEach(tab=>{
+
+  const option = document.createElement("option");
+  option.value = "custom:" + tab.id;
+  option.textContent = tab.name;
+
+  target.append(option);
+
+ });
+
+ if([...target.options].some(o=>o.value===oldTarget)){
+  target.value = oldTarget;
+ }
+
+
+ /* ADMIN TAB LIST */
+
+ $("adminTabs").replaceChildren();
+
+ customTabs.forEach(tab=>{
+
+  const item = document.createElement("div");
+  item.className = "admin-item";
+
+  const title = document.createElement("b");
+  title.textContent =
+   (tab.icon || "✦") + " " + tab.name;
+
+  const count = websites.filter(
+   site=>websiteCategory(site) === tab.id
+  ).length;
+
+  const info = document.createElement("p");
+  info.className = "muted";
+  info.textContent = count + " website di tab ini.";
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  const edit = document.createElement("button");
+  edit.className = "secondary";
+  edit.textContent = "EDIT";
+  edit.onclick = ()=>editTab(tab);
+
+  const del = document.createElement("button");
+  del.className = "danger";
+  del.textContent = "HAPUS";
+  del.onclick = ()=>removeTab(tab);
+
+  actions.append(edit,del);
+  item.append(title,info,actions);
+
+  $("adminTabs").append(item);
+
+ });
+
+}
+
+
+/* =========================
+   SHOW CUSTOM TAB
+========================= */
+
+function showCustomTab(tabId){
+
+ const tab = customTabs.find(t=>t.id===tabId);
+
+ if(!tab) return;
+
+ $("customPageTitle").textContent =
+  (tab.icon || "✦") + " " + tab.name;
+
+ $("customPageDescription").textContent =
+  "Website yang tersimpan di tab " + tab.name;
+
+ const grid = $("customWebsiteGrid");
+ grid.replaceChildren();
+
+ const tabWebsites = websites.filter(
+  site=>websiteCategory(site) === tabId
+ );
+
+ if(!tabWebsites.length){
+
+  const empty = document.createElement("div");
+  empty.className = "empty";
+  empty.textContent =
+   "Belum ada website di tab ini. Admin dapat menambahkan website melalui Dashboard Admin.";
+
+  grid.append(empty);
+
+ }else{
+
+  tabWebsites.forEach(site=>{
+   grid.append(createWebsiteCard(site));
+  });
+
+ }
+
+ const featureGrid = $("customFeatureGrid");
+ featureGrid.replaceChildren();
+
+ const relatedFeatures = features.filter(
+  f=>f.target === "custom:" + tabId
+ );
+
+ relatedFeatures.forEach(feature=>{
+  featureGrid.append(createFeatureCard(feature));
+ });
+
+ showPage("customPage");
+}
+
+
+/* =========================
+   FEATURE BUILDER RENDER
+========================= */
+
+function createFeatureCard(feature){
+
+ const card = document.createElement("div");
+ card.className = "card";
+
+ const title = document.createElement("h3");
+ title.textContent =
+  (feature.icon || "✦") + " " + (feature.title || "Fitur");
+
+ const content = document.createElement("p");
+ content.textContent = feature.content || "";
+
+ card.append(title,content);
+
+ if(feature.url && ["card","link","button"].includes(feature.type)){
+
+  const button = document.createElement("button");
+
+  button.textContent =
+   feature.type === "link" ? "BUKA LINK" : "BUKA";
+
+  button.addEventListener("click",()=>{
+   const url = safeUrl(feature.url);
+
+   if(url){
+    window.open(url,"_blank","noopener,noreferrer");
+   }
+  });
+
+  card.append(button);
+ }
+
+ return card;
+}
+
+function renderFeatures(){
+
+ const area = $("customFeatures");
+ area.replaceChildren();
+
+ features
+  .filter(f=>f.target === "searchPage")
+  .forEach(feature=>{
+   area.append(createFeatureCard(feature));
+  });
+
+ $("adminFeatures").replaceChildren();
+
+ features.forEach(feature=>{
+
+  const item = document.createElement("div");
+  item.className = "admin-item";
+
+  const title = document.createElement("b");
+  title.textContent = feature.title || "Fitur";
+
+  const info = document.createElement("p");
+  info.className = "muted";
+  info.textContent =
+   (feature.type || "card") + " • " +
+   (feature.target || "searchPage");
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  const edit = document.createElement("button");
+  edit.className = "secondary";
+  edit.textContent = "EDIT";
+  edit.onclick = ()=>editFeature(feature);
+
+  const del = document.createElement("button");
+  del.className = "danger";
+  del.textContent = "HAPUS";
+  del.onclick = ()=>removeFeature(feature);
+
+  actions.append(edit,del);
+  item.append(title,info,actions);
+
+  $("adminFeatures").append(item);
+
+ });
+
+}
+
+
+/* =========================
+   ADMIN WEBSITE LIST
+========================= */
+
+function renderAdminWebsites(){
+
+ const area = $("adminWebsites");
+ area.replaceChildren();
+
+ websites.forEach(site=>{
+
+  const item = document.createElement("div");
+  item.className = "admin-item";
+
+  const title = document.createElement("b");
+  title.textContent = site.name || "Website";
+
+  const url = document.createElement("p");
+  url.className = "muted";
+  url.textContent = site.url || "";
+
+  const category = document.createElement("p");
+  category.className = "muted";
+  category.textContent =
+   "Tab: " + getTabName(websiteCategory(site));
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  const edit = document.createElement("button");
+  edit.className = "secondary";
+  edit.textContent = "EDIT";
+  edit.onclick = ()=>editWebsite(site);
+
+  const del = document.createElement("button");
+  del.className = "danger";
+  del.textContent = "HAPUS";
+  del.onclick = ()=>removeWebsite(site);
+
+  actions.append(edit,del);
+  item.append(title,url,category,actions);
+
+  area.append(item);
+
+ });
+
+}
+
+
+/* =========================
+   RENDER ALL
+========================= */
+
+function renderAll(){
+
+ renderWebsites();
+ renderTabs();
+ renderFeatures();
+ renderAdminWebsites();
+
+}
+
+
+/* =========================
+   ADD / EDIT WEBSITE
+========================= */
+
+function editWebsite(site){
+
+ $("webId").value = site.id;
+ $("webName").value = site.name || "";
+ $("webUrl").value = site.url || "";
+
+ $("webAliases").value =
+  Array.isArray(site.aliases)
+   ? site.aliases.join(", ")
+   : "";
+
+ $("webDescription").value = websiteDescription(site);
+
+ $("webCategory").value = websiteCategory(site);
+
+ $("webName").focus();
+
+ message("Mengedit website: " + site.name);
+}
+
+function resetWebsiteForm(){
+
+ [
+  "webId",
+  "webName",
+  "webUrl",
+  "webAliases",
+  "webDescription"
+ ].forEach(id=>$(id).value="");
+
+ $("webCategory").value = "searchPage";
+}
+
+$("cancelWebsite").onclick = resetWebsiteForm;
+
+
+$("saveWebsite").onclick = async()=>{
+
+ if(!isAdmin) return;
+
+ const name = $("webName").value.trim();
+ const url = normalizeUrl($("webUrl").value);
+
+ const description = $("webDescription").value.trim();
+ const categoryId = $("webCategory").value;
+
+ if(!name){
+  return message("Nama website wajib diisi.");
+ }
+
+ if(!url){
+  return message("URL website tidak valid.");
+ }
+
+ const aliases = $("webAliases").value
+  .split(",")
+  .map(x=>x.trim())
+  .filter(Boolean);
+
+ if(categoryId !== "searchPage" &&
+    !customTabs.some(t=>t.id === categoryId)){
+  return message("Tab tujuan tidak ditemukan.");
+ }
+
+ const id = $("webId").value || makeId("site");
+
+ const oldSite = websites.find(site=>site.id === id);
+
+ try{
+
+  await setDoc(doc(db,"websites",id),{
+
+   name,
+   url,
+   aliases,
+
+   // Dua field ini disimpan agar kompatibel
+   // dengan data lama dan kode versi sebelumnya.
+   desc:description,
+   description:description,
+
+   tabId:categoryId,
+   categoryId:categoryId,
+
+   isDefault:oldSite?.isDefault || false,
+   updatedAt:serverTimestamp()
+
+  },{merge:true});
+
+  resetWebsiteForm();
+
+  message(
+   "Website berhasil disimpan ke tab " +
+   getTabName(categoryId) + "."
+  );
+
+ }catch(error){
+
+  message("Gagal menyimpan website: " + error.message);
+
+ }
+
+};
+
+
+async function removeWebsite(site){
+
+ if(!isAdmin) return;
+
+ if(!confirm("Hapus website " + site.name + "?")) return;
+
+ try{
+
+  await deleteDoc(doc(db,"websites",site.id));
+  message("Website berhasil dihapus.");
+
+ }catch(error){
+
+  message("Gagal menghapus: " + error.message);
+
+ }
+
+}
+
+
+/* =========================
+   ADD / EDIT TAB
+========================= */
+
+function editTab(tab){
+
+ $("tabId").value = tab.id;
+ $("tabName").value = tab.name || "";
+ $("tabIcon").value = tab.icon || "";
+
+ $("tabName").focus();
+
+ message("Mengedit tab: " + tab.name);
+}
+
+$("cancelTab").onclick = ()=>{
+
+ $("tabId").value = "";
+ $("tabName").value = "";
+ $("tabIcon").value = "";
+
+};
+
+$("saveTab").onclick = async()=>{
+
+ if(!isAdmin) return;
+
+ const name = $("tabName").value.trim();
+
+ if(!name){
+  return message("Nama tab wajib diisi.");
+ }
+
+ const id = $("tabId").value || makeId("tab");
+
+ try{
+
+  await setDoc(doc(db,"tabs",id),{
+
+   name,
+   icon:$("tabIcon").value.trim() || "✦",
+   updatedAt:serverTimestamp()
+
+  },{merge:true});
+
+  $("cancelTab").click();
+
+  message("Tab berhasil disimpan. Sekarang kamu bisa memasukkan website ke tab ini.");
+
+ }catch(error){
+
+  message("Gagal menyimpan tab: " + error.message);
+
+ }
+
+};
+
+
+async function removeTab(tab){
+
+ if(!isAdmin) return;
+
+ const related = websites.filter(
+  site=>websiteCategory(site) === tab.id
+ );
+
+ const question = related.length
+  ? "Tab ini memiliki " + related.length +
+    " website. Hapus tab? Website akan dipindahkan ke SEARCH."
+  : "Hapus tab " + tab.name + "?";
+
+ if(!confirm(question)) return;
+
+ try{
+
+  // Website tidak ikut dihapus.
+  // Hanya dipindahkan ke SEARCH.
+  for(const site of related){
+
+   await setDoc(
+    doc(db,"websites",site.id),
+    {
+     tabId:"searchPage",
+     categoryId:"searchPage",
+     updatedAt:serverTimestamp()
+    },
+    {merge:true}
+   );
+
+  }
+
+  // Hapus fitur yang berada di tab tersebut.
+  const relatedFeatures = features.filter(
+   f=>f.target === "custom:" + tab.id
+  );
+
+  for(const feature of relatedFeatures){
+   await deleteDoc(doc(db,"features",feature.id));
+  }
+
+  await deleteDoc(doc(db,"tabs",tab.id));
+
+  message("Tab dihapus. Website di dalamnya dipindahkan ke SEARCH.");
+  showPage("searchPage");
+
+ }catch(error){
+
+  message("Gagal menghapus tab: " + error.message);
+
+ }
+
+}
+
+
+/* =========================
+   EDIT / DELETE FEATURE
+========================= */
+
+function editFeature(feature){
+
+ $("featureId").value = feature.id;
+ $("featureTitle").value = feature.title || "";
+ $("featureType").value = feature.type || "card";
+ $("featureTarget").value = feature.target || "searchPage";
+ $("featureContent").value = feature.content || "";
+ $("featureUrl").value = feature.url || "";
+ $("featureIcon").value = feature.icon || "";
+
+}
+
+$("cancelFeature").onclick = ()=>{
+
+ [
+  "featureId",
+  "featureTitle",
+  "featureContent",
+  "featureUrl",
+  "featureIcon"
+ ].forEach(id=>$(id).value="");
+
+ $("featureType").value = "card";
+ $("featureTarget").value = "searchPage";
+
+};
+
+
+$("saveFeature").onclick = async()=>{
+
+ if(!isAdmin) return;
+
+ const title = $("featureTitle").value.trim();
+
+ if(!title){
+  return message("Judul fitur wajib diisi.");
+ }
+
+ const target = $("featureTarget").value;
+
+ if(target.startsWith("custom:")){
+
+  const id = target.slice(7);
+
+  if(!customTabs.some(t=>t.id === id)){
+   return message("Tab tujuan tidak ditemukan.");
+  }
+
+ }
+
+ const rawUrl = $("featureUrl").value.trim();
+ const url = rawUrl ? normalizeUrl(rawUrl) : "";
+
+ if(rawUrl && !url){
+  return message("URL fitur tidak valid.");
+ }
+
+ const id = $("featureId").value || makeId("feature");
+
+ try{
+
+  await setDoc(doc(db,"features",id),{
+
+   title,
+   type:$("featureType").value,
+   target,
+   content:$("featureContent").value.trim(),
+   url,
+   icon:$("featureIcon").value.trim() || "✦",
+   updatedAt:serverTimestamp()
+
+  },{merge:true});
+
+  $("cancelFeature").click();
+
+  message("Fitur berhasil disimpan.");
+
+ }catch(error){
+
+  message("Gagal menyimpan fitur: " + error.message);
+
+ }
+
+};
+
+
+async function removeFeature(feature){
+
+ if(!isAdmin) return;
+
+ if(!confirm("Hapus fitur ini?")) return;
+
+ try{
+
+  await deleteDoc(doc(db,"features",feature.id));
+  message("Fitur berhasil dihapus.");
+
+ }catch(error){
+
+  message(error.message);
+
+ }
+
+}
+
+
+/* =========================
+   RESTORE DEFAULT WEBSITES
+   Anti duplicate by URL/name
+========================= */
+
+async function restoreMissingDefaults(){
+
+ if(!isAdmin) return;
+
+ try{
+
+  const snapshot = await getDocs(collection(db,"websites"));
+
+  const existingDocs = snapshot.docs.map(d=>({
+   id:d.id,
+   ...d.data()
+  }));
+
+  for(const site of DEFAULT_WEBSITES){
+
+   const found = existingDocs.some(old=>{
+
+    const oldUrl = safeUrl(old.url);
+    const newUrl = safeUrl(site.url);
+
+    return (
+     old.id === site.id ||
+     (oldUrl && newUrl && oldUrl === newUrl) ||
+     (old.name || "").toLowerCase() === site.name.toLowerCase()
+    );
+
+   });
+
+   if(!found){
+
+    const {id,...data} = site;
+
+    await setDoc(doc(db,"websites",id),{
+
+     ...data,
+     desc:data.description,
+     tabId:"searchPage",
+     categoryId:"searchPage",
+     isDefault:true,
+     updatedAt:serverTimestamp()
+
+    });
+
+   }
+
+  }
+
+ }catch(error){
+
+  console.error("Restore error:",error);
+  message("Gagal memeriksa website default: " + error.message);
+
+ }
+
+}
+
+
+$("restoreDefaults").onclick = async()=>{
+
+ if(!isAdmin) return;
+
+ if(!confirm(
+  "Pulihkan website default yang belum ada? Website yang sudah tersimpan tidak akan digandakan."
+ )) return;
+
+ await restoreMissingDefaults();
+
+ message("Pemeriksaan website default selesai.");
+
+};
+
+
+/* =========================
+   INITIALIZATION
+========================= */
+
+$("searchMessage").textContent = "Menghubungkan ke Firebase...";
+
+</script>
+</body>
+</html>
